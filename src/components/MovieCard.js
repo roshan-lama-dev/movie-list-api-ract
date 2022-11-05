@@ -1,17 +1,39 @@
-import React from "react";
-import { Button, Card } from "react-bootstrap";
+import { Col, Row } from "react-bootstrap";
+import Button from "react-bootstrap/Button";
+import Card from "react-bootstrap/Card";
 
-export const MovieCard = () => {
+export const MovieCard = ({ movie = {}, fun }) => {
+  console.log(movie);
+  const { Poster, Title, Year, Plot, imdbRating } = movie;
+
   return (
-    <Card style={{ width: "18rem" }}>
+    <Card style={{ width: "18rem", marginTop: "10px", color: "black" }}>
+      <Card.Img variant="top" src={Poster} />
       <Card.Body>
-        <Card.Title>Card Title</Card.Title>
-        <Card.Subtitle className="mb-2 text-muted">Card Subtitle</Card.Subtitle>
-        <Card.Text>
-          Some quick example text to build on the card title and make up the
-          bulk of the card's content.
-        </Card.Text>
-        <Button variant="primary">Go Detilas</Button>
+        <Card.Title>{Title}</Card.Title>
+        <Card.Text>{Plot}</Card.Text>
+        <Card.Text>Released Year: {Year}</Card.Text>
+        <Card.Text>Imdb Rating: {imdbRating}</Card.Text>
+        <Col>
+          <Row className="my-3">
+            <Button
+              onClick={() => fun("happy")}
+              variant="danger"
+              className="text-center"
+            >
+              Send to Happy List
+            </Button>
+          </Row>
+          <Row>
+            <Button
+              onClick={() => fun("sad")}
+              variant="info"
+              className="text-center"
+            >
+              Send to Lazy List
+            </Button>
+          </Row>
+        </Col>
       </Card.Body>
     </Card>
   );

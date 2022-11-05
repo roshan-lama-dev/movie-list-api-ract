@@ -1,23 +1,30 @@
+import { useState } from "react";
+import { Container } from "react-bootstrap";
 import "./App.css";
-import "bootstrap/dist/css/bootstrap.min.css";
-// importing component library
-import { Button, Container } from "react-bootstrap";
+import { MovieList } from "./components/MovieList";
+import { SearchForm } from "./components/SearchForm";
+
 import { Title } from "./components/Title";
 
-import { SearchForm } from "./components/SearchForm";
-import { MovieList } from "./components/MovieList";
-import { MovieCard } from "./components/MovieCard";
-
 function App() {
+  const [movieList, setMovieList] = useState([]);
+
+  const displayToHappyList = (movieObj) => {
+    const newArg = movieList.filter((item) => item.imdbID !== movieObj.imdbID);
+    setMovieList([...newArg, movieObj]);
+    console.log(movieList);
+  };
+
+  const displayToSadList = () => {};
   return (
-    <div className="wrapper">
+    <div className="wrapper ">
       <Container>
-        {/* Title */}
         <Title />
-        <SearchForm />
-        <MovieList />
-        {/* Form */}
-        {/* Display Area Moview List */}
+        {/* form */}
+        <SearchForm displayToHappyList={displayToHappyList} />
+
+        {/* movie List */}
+        <MovieList movieList={movieList} />
       </Container>
     </div>
   );

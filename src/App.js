@@ -15,7 +15,12 @@ function App() {
     console.log(movieList);
   };
 
-  const displayToSadList = () => {};
+  const onDeleteClick = (id) => {
+    if (window.confirm("Delete?")) {
+      setMovieList(movieList.filter((item) => item.imdbID !== id));
+    }
+    console.log(movieList);
+  };
   return (
     <div className="wrapper ">
       <Container>
@@ -24,7 +29,7 @@ function App() {
         <SearchForm displayToHappyList={displayToHappyList} />
 
         {/* movie List */}
-        <MovieList movieList={movieList} />
+        <MovieList movieList={movieList} onDeleteClick={onDeleteClick} />
       </Container>
     </div>
   );

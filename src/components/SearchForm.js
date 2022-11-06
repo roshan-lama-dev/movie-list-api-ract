@@ -1,15 +1,39 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Alert, Button } from "react-bootstrap";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import { fetchData } from "../utilies/axiosHelpers";
+import { randomChar } from "../utilies/randomChar";
 import { MovieCard } from "./MovieCard";
 
 export const SearchForm = ({ displayToHappyList }) => {
   const [form, setForm] = useState("");
   const [movie, setMovie] = useState({});
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const char = randomChar();
+    console.log(char);
+
+    getMovieFromApi(char);
+  }, []);
+
+  const getMovieFromApi = async (str) => {
+    try {
+      const resp = await fetchData(str);
+      console.log(resp.data);
+      if (resp.data.Response === "True") {
+        setMovie(resp.data);
+        console.log(movie);
+      } else {
+        setError(resp.data.Error);
+      }
+    } catch (error) {
+      console.log(error);
+      setError("Error occured, please try again later");
+    }
+  };
 
   // get the form data while typing
   const handleOnChange = (e) => {
@@ -24,19 +48,7 @@ export const SearchForm = ({ displayToHappyList }) => {
     error && setError("");
     movie.imdbID && setMovie({});
 
-    try {
-      const resp = await fetchData(form);
-      console.log(resp.data);
-      if (resp.data.Response === "True") {
-        setMovie(resp.data);
-        console.log(movie);
-      } else {
-        setError(resp.data.Error);
-      }
-    } catch (error) {
-      console.log(error);
-      setError("Error occured, please try again later");
-    }
+    getMovieFromApi(form);
   };
 
   const handleOnAddToList = (cat) => {
@@ -47,6 +59,12 @@ export const SearchForm = ({ displayToHappyList }) => {
     setForm("");
   };
 
+  const handleOnClear = () => {
+    const char = randomChar();
+    console.log(char);
+    setMovie({});
+    getMovieFromApi(char);
+  };
   // display movie data in our UI
   return (
     <Form className="py-3" onSubmit={handleOnSubmit}>
@@ -66,7 +84,13 @@ export const SearchForm = ({ displayToHappyList }) => {
         </Col>
       </Row>
       <Row className="py-3 justify-content-center">
-        {movie.imdbID && <MovieCard movie={movie} fun={handleOnAddToList} />}
+        {movie.imdbID && (
+          <MovieCard
+            movie={movie}
+            fun={handleOnAddToList}
+            handleOnClear={handleOnClear}
+          />
+        )}
         {error && <Alert variant="danger">{error}</Alert>}
       </Row>
     </Form>
